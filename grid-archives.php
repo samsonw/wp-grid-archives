@@ -4,7 +4,7 @@ Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/
 Version: 0.5.0
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
-Description: Grid Archives will offer a grid style archives page for WordPress.
+Description: Grid Archives offers a grid style archives page for WordPress.
 
 **************************************************************************
 

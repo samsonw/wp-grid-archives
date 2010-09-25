@@ -15,10 +15,16 @@ Grid Archives offers a grid style archives page for WordPress.
 
 View [live demo](http://blog.samsonis.me/archives)
 
+**NOTES:**
+**Grid Archives plugin is currently under actively development, current version may not be compatiable with your theme (color, page width etc, you may need to manually tweak it if it's not diplaying appropriately).  Make Grid Archives more flexiable and compatible is the goal of the future version.**
+
+**For latest update, please check github repository:**
+**http://github.com/samsonw/wp-grid-archives**
+
 
 == Installation ==
 
-1. Upload and unpack the grid-archives plugin to wordpress plugin directory **wp-content/plugins/grid-archives**
+1. Upload and unpack the grid-archives plugin to wordpress plugin directory **"wp-content/plugins/grid-archives"**
 2. Activate **Grid Archives** plugin on your *Plugins* page in *Site Admin*.
 3. Create a "Archives" page (use "Page Full Width" template to get more width)
 4. Put "[grid_archives]" in the content and save it.
@@ -34,7 +40,7 @@ http://blog.samsonis.me/archives/
 
 == Changelog ==
 
-= 0.5.0
+= 0.5.0 =
 
 * Initial import the working copy of my blog archives page: http://blog.samsonis.me/archives/
 

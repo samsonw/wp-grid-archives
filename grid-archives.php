@@ -43,20 +43,28 @@ if ( ! defined( 'WP_PLUGIN_DIR' ) )
 
 
 define('GRID_ARCHIVES_POSTS_TRANSIENT_KEY', 'grid_archives_posts');
+define('GRID_ARCHIVES_OPTION_NAME', 'grid_archives_options');
 
 
 if (!class_exists("GridArchives")) {
     class GridArchives {
+        var $options;
+
         function GridArchives() {
             $this->plugin_url = WP_PLUGIN_URL . '/' . dirname(plugin_basename(__FILE__));
 
             add_action('wp_print_styles', array(&$this, 'load_styles'));
             add_shortcode('grid_archives', array(&$this, 'display_archives'));
 
+            // admin menu
+            add_action('admin_menu', array(&$this, 'grid_archives_settings'));
+
             // invalidate cache
             add_action('save_post', array(&$this, 'delete_cache'));
             add_action('edit_post', array(&$this, 'delete_cache'));
             add_action('delete_post', array(&$this, 'delete_cache'));
+
+            register_activation_hook(__FILE__, array(&$this, 'install'));
         }
 
         // Grab all posts and filter them into an array
@@ -65,13 +73,13 @@ if (!class_exists("GridArchives")) {
             if($posts = get_transient(GRID_ARCHIVES_POSTS_TRANSIENT_KEY)) {
                 return $posts;
             }
-            
+
             // Get a simple array of all posts
             $rawposts = get_posts('numberposts=-1');
 
             // Trim some memory
             foreach ( $rawposts as $key => $rawpost )
-                $rawposts[$key]->post_content = $this->get_excerpt($rawposts[$key]->post_content);
+                $rawposts[$key]->post_content = $this->get_excerpt($rawposts[$key]->post_content, $this->options['post_content_max_len']);
 
             // Loop through each post and sort it into a structured array
             foreach( $rawposts as $key => $post ) {
@@ -100,7 +108,7 @@ if (!class_exists("GridArchives")) {
                 foreach ($monthly_posts as $post) {
                     $html .= '<li class="ga_post">'
                         . '<div class="ga_post_main">'
-                        . '<a href="' . get_permalink( $post->ID ) . '" title="' . $post->post_title . '">' . $this->get_excerpt($post->post_title, 60) . '</a>'
+                        . '<a href="' . get_permalink( $post->ID ) . '" title="' . $post->post_title . '">' . $this->get_excerpt($post->post_title, $this->options['post_title_max_len']) . '</a>'
                         . '<p>' . $post->post_content . '</p>'
                         . '</div>'
                         . '<p class="ga_post_date">' . mysql2date('j M Y', $post->post_date) . '</p>'
@@ -122,22 +130,67 @@ if (!class_exists("GridArchives")) {
             return $text;
         }
 
-        private function parse_summaries($str){
+        private function parse_summaries($str) {
             $summaries = array();
             foreach (explode("\n", trim($str)) as $line) {
-                list($yearmonth, $summary) = array_map('trim', explode("#", $line, 2));
-                if (!empty($yearmonth))
-                    $summaries[$yearmonth] = stripslashes($summary);
+                if(strpos($line, '##') !== FALSE){
+                    list($yearmonth, $summary) = array_map('trim', explode("##", $line, 2));
+                    if (!empty($yearmonth)){
+                        $summaries[$yearmonth] = stripslashes($summary);
+                    }
+                }
             }
             return $summaries;
         }
 
+        private function get_options() {
+            $options = array('post_title_max_len' => 60, 'post_content_max_len' => 90, 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
+            $saved_options = get_option(GRID_ARCHIVES_OPTION_NAME);
+
+            if (!empty($saved_options)) {
+                foreach ($saved_options as $key => $option)
+                    $options[$key] = $option;
+            }
+
+            if ($saved_options != $options) {
+                update_option(GRID_ARCHIVES_OPTION_NAME, $options);
+            }
+            return $options;
+        }
+
+        function handle_grid_archives_settings() {
+            if (!current_user_can('manage_options'))  {
+                wp_die( __('You do not have sufficient permissions to access this page.') );
+            }
+
+            $options = $this->get_options();
+
+            if (isset($_POST['submit'])) {
+                check_admin_referer('grid-archives-nonce');
+
+                $options = array();
+
+                $options['post_title_max_len'] = (int)$_POST['post_title_max_len'];
+                $options['post_content_max_len'] = (int)$_POST['post_content_max_len'];
+                $options['monthly_summaries'] = htmlspecialchars($_POST['monthly_summaries']);
+
+                update_option(GRID_ARCHIVES_OPTION_NAME, $options);
+
+                $this->delete_cache();
+                echo '<div class="updated" id="message"><p>Settings saved.</p></div>';
+            }
+            include_once("grid-archives-options.php");
+        }
+
         function display_archives($atts){
+            $this->options = $this->get_options();
             $posts = $this->get_posts();
-            // TODO make this an option
-            $summaries_str = "2010.09#Kindle, Kindle ...\n2010.08#Avatar, 3D, IMAX\n2010.07#世界杯……\n";
-            $monthly_summaries = $this->parse_summaries($summaries_str);
+            $monthly_summaries = $this->parse_summaries($this->options['monthly_summaries']);
             return $this->compose_html($posts, $monthly_summaries);
+        }
+
+        function grid_archives_settings() {
+            add_options_page('Grid Archives Settings', 'Grid Archives', 'manage_options', 'grid-archives-settings', array(&$this, 'handle_grid_archives_settings'));
         }
 
         function load_styles(){
@@ -148,6 +201,10 @@ if (!class_exists("GridArchives")) {
 
         function delete_cache() {
             delete_transient(GRID_ARCHIVES_POSTS_TRANSIENT_KEY);
+        }
+
+        function install() {
+            $this->options = $this->get_options();
         }
     }
 }

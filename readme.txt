@@ -3,7 +3,7 @@ Contributors: samsonw
 Tags: archive, archives, grid
 Requires at least: 2.5
 Tested up to: 3.0
-Stable tag: 0.5.0
+Stable tag: 0.6.0
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -14,9 +14,6 @@ Grid Archives offers a grid style archives page for WordPress.
 *Grid Archives* offers a grid style archives page for WordPress, just put "[grid_archives]" in your Post or Page to show the grid-style archives.
 
 View [live demo](http://blog.samsonis.me/archives)
-
-**NOTES:**
-**Grid Archives plugin is currently under actively development, current version may not be compatiable with your theme (color, page width etc, you may need to manually tweak it if it's not diplaying appropriately).  Make Grid Archives more flexiable and compatible is the goal of the future version.**
 
 **For latest update, please check github repository:**
 **http://github.com/samsonw/wp-grid-archives**
@@ -39,6 +36,15 @@ http://blog.samsonis.me/archives/
 
 
 == Changelog ==
+
+= 0.6.0 =
+
+* added settings page in admin
+* added options in settings for user to specify the maximum post title and maximum post content length
+* added options in settings for user to specify the monthly summaries
+* remove .grid_archives_column width property
+* trim monthly summaries before parse
+
 
 = 0.5.0 =
 

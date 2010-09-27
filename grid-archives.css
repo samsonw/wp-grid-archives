@@ -6,7 +6,7 @@
   float: left;
   margin: 0 15px;
   overflow: hidden;
-  width: 900px;
+  /* width: 900px; */
 }
 
 #grid_archives ul{

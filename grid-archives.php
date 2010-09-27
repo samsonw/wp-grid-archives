@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '0.5.0');
+define('GRID_ARCHIVES_VERSION', '0.6.0');
 
 /**
  * Guess the wp-content and plugin urls/paths

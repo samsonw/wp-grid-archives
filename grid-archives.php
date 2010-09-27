@@ -124,7 +124,7 @@ if (!class_exists("GridArchives")) {
 
         private function parse_summaries($str){
             $summaries = array();
-            foreach (explode("\n", $str) as $line) {
+            foreach (explode("\n", trim($str)) as $line) {
                 list($yearmonth, $summary) = array_map('trim', explode("#", $line, 2));
                 if (!empty($yearmonth))
                     $summaries[$yearmonth] = stripslashes($summary);

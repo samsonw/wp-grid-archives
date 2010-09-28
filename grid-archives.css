@@ -15,6 +15,7 @@
 }
 
 #grid_archives ul li.ga_year_month {
+  color: #ABD1EA;
   font-size: 34px;
   padding: 20px 0;
   clear: left;
@@ -54,8 +55,15 @@
   behavior: url(/wp-content/plugins/grid-archives/PIE.htc);
 }
 
-#grid_archives ul li.ga_post a {
+#grid_archives ul li.ga_post a, #grid_archives ul li.ga_post a:link, #grid_archives ul li.ga_post a:visited {
   line-height: 125%;
+  /* color: #A8EF9D; */
+  color: #ABD1EA;
+}
+
+#grid_archives ul li.ga_post a:hover {
+  line-height: 125%;
+  color: #FF9933;
 }
 
 #grid_archives ul li.ga_post p {

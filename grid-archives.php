@@ -172,7 +172,7 @@ if (!class_exists("GridArchives")) {
 
                 $options['post_title_max_len'] = (int)$_POST['post_title_max_len'];
                 $options['post_content_max_len'] = (int)$_POST['post_content_max_len'];
-                $options['monthly_summaries'] = htmlspecialchars($_POST['monthly_summaries']);
+                $options['monthly_summaries'] = htmlspecialchars(stripslashes($_POST['monthly_summaries']));
 
                 update_option(GRID_ARCHIVES_OPTION_NAME, $options);
 

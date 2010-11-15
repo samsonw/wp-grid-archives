@@ -2,7 +2,7 @@
 /* 
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 0.6.2
+Version: 0.6.3
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '0.6.2');
+define('GRID_ARCHIVES_VERSION', '0.6.3');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -110,9 +110,11 @@ if (!class_exists("GridArchives")) {
                         . '<div class="ga_post_main">'
                         . '<a href="' . get_permalink( $post->ID ) . '" title="' . $post->post_title . '">' . $this->get_excerpt($post->post_title, $this->options['post_title_max_len']) . '</a>'
                         . '<p>' . $post->post_content . '</p>'
-                        . '</div>'
-                        . '<p class="ga_post_date">' . mysql2date('j M Y', $post->post_date) . '</p>'
-                        . '</li>';
+                        . '</div>';
+                    if(!$this->options['post_date_not_display']){
+                        $html .= '<p class="ga_post_date">' . mysql2date('j M Y', $post->post_date) . '</p>';
+                    }
+                    $html .= '</li>';
                 }
             }
             $html .= '</ul>' . '</div>';
@@ -144,7 +146,7 @@ if (!class_exists("GridArchives")) {
         }
 
         private function get_options() {
-            $options = array('post_title_max_len' => 60, 'post_content_max_len' => 90, 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
+            $options = array('post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
             $saved_options = get_option(GRID_ARCHIVES_OPTION_NAME);
 
             if (!empty($saved_options)) {
@@ -172,6 +174,7 @@ if (!class_exists("GridArchives")) {
 
                 $options['post_title_max_len'] = (int)$_POST['post_title_max_len'];
                 $options['post_content_max_len'] = (int)$_POST['post_content_max_len'];
+                $options['post_date_not_display'] = isset($_POST['post_date_not_display']) ? (boolean)$_POST['post_date_not_display'] : false;
                 $options['monthly_summaries'] = htmlspecialchars(stripslashes($_POST['monthly_summaries']));
 
                 update_option(GRID_ARCHIVES_OPTION_NAME, $options);

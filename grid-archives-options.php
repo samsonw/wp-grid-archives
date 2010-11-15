@@ -18,7 +18,11 @@
         </tr>
         <tr>
           <th><label for="post_content_max_len">Post Content Maximum Length</label></th>
-          <td> <input type="text" class="small-text" value="<?php echo $options['post_content_max_len']; ?>" id="post_content_max_len" name="post_content_max_len"> characters</td>
+          <td><input type="text" class="small-text" value="<?php echo $options['post_content_max_len']; ?>" id="post_content_max_len" name="post_content_max_len"> characters</td>
+        </tr>
+        <tr valign="top">
+          <th scope="row">Post Date</th>
+          <td><label for="post_date_not_display"><input type="checkbox" value="1" id="post_date_not_display" name="post_date_not_display" <?php if($options['post_date_not_display']) echo 'checked="checked"';?> > Do not display post date</label></td>
         </tr>
     </tbody></table>
 

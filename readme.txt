@@ -3,7 +3,7 @@ Contributors: samsonw
 Tags: archive, archives, grid
 Requires at least: 2.5
 Tested up to: 3.0
-Stable tag: 0.6.2
+Stable tag: 0.6.3
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -36,6 +36,9 @@ http://blog.samsonis.me/archives/
 
 
 == Changelog ==
+
+= 0.6.3 =
+* added option to not display post date
 
 = 0.6.2 =
 * fixed the [magic quotes issue](http://wordpress.org/support/topic/plugin-grid-archives-bug-report-repeatedly-escaping-characters)

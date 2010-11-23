@@ -15,6 +15,7 @@
 }
 
 #grid_archives ul li.ga_year_month {
+  background: none repeat scroll 0 0 transparent;
   color: #ABD1EA;
   font-size: 34px;
   padding: 20px 0;
@@ -32,6 +33,7 @@
 
 #grid_archives ul li.ga_post {
   float: left;
+  background: none repeat scroll 0 0 transparent;
   list-style-type: none;
   margin: 0 15px 15px 0;
 }

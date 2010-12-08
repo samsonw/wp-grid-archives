@@ -3,7 +3,7 @@ Contributors: samsonw
 Tags: archive, archives, grid
 Requires at least: 2.5
 Tested up to: 3.0
-Stable tag: 0.7.0
+Stable tag: 0.8.0
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -36,6 +36,9 @@ http://blog.samsonis.me/archives/
 
 
 == Changelog ==
+
+= 0.8.0 =
+* added an option to allow user to custom the display stylesheets, these customizations won't be lost after plugin update.
 
 = 0.7.0 =
 * make post date display style as an option, e.g. [displayed using American style (month/day/year)](http://wordpress.org/support/topic/plugin-grid-archives-changing-date-order?replies=4)

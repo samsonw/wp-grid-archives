@@ -2,7 +2,7 @@
 /* 
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 0.7.0
+Version: 0.8.0
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '0.7.0');
+define('GRID_ARCHIVES_VERSION', '0.8.0');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -150,7 +150,7 @@ if (!class_exists("GridArchives")) {
         }
 
         private function get_options() {
-            $options = array('post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
+            $options = array('post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'custom_css_styles' => '', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
             $saved_options = get_option(GRID_ARCHIVES_OPTION_NAME);
 
             if (!empty($saved_options)) {
@@ -182,6 +182,8 @@ if (!class_exists("GridArchives")) {
                 $options['post_date_format'] = $_POST['post_date_format'];
                 $options['post_date_format_custom'] = stripslashes($_POST['post_date_format_custom']);
                 
+                $options['custom_css_styles'] = stripslashes($_POST['custom_css_styles']);
+                
                 $options['default_monthly_summary'] = htmlspecialchars(stripslashes($_POST['default_monthly_summary']));
                 $options['monthly_summaries'] = htmlspecialchars(stripslashes($_POST['monthly_summaries']));
 
@@ -194,7 +196,7 @@ if (!class_exists("GridArchives")) {
         }
 
         function display_archives($atts){
-            $this->options = $this->get_options();
+            // $this->options = $this->get_options();
             $posts = $this->get_posts();
             $monthly_summaries = $this->parse_summaries($this->options['monthly_summaries']);
             return $this->compose_html($posts, $monthly_summaries);
@@ -205,9 +207,18 @@ if (!class_exists("GridArchives")) {
         }
 
         function load_styles(){
+            $this->options = $this->get_options();
+            
             $css_url = $this->plugin_url . '/grid-archives.css';
             wp_register_style('grid_archives', $css_url, array(), GRID_ARCHIVES_VERSION, 'screen');
             wp_enqueue_style('grid_archives');
+            
+            $custom_css_styles = trim($this->options['custom_css_styles']);
+            if(!empty($custom_css_styles)) {
+                $custom_css_url = $this->plugin_url . '/grid-archives-custom-css.php';
+                wp_register_style('grid_archives_custom', $custom_css_url, array(), GRID_ARCHIVES_VERSION, 'screen');
+                wp_enqueue_style('grid_archives_custom');
+            }
         }
 
         function delete_cache() {

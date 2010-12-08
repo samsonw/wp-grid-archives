@@ -38,6 +38,15 @@
             </fieldset>
           </td>
         </tr>
+        <tr>
+          <th><label for="custom_css_styles">Custom CSS Styles</label></th>
+          <td><textarea id="custom_css_styles" name="custom_css_styles" cols="60" rows="5"><?php echo $options['custom_css_styles']; ?></textarea><br/>
+            <span class="description">These custom CSS styles will overwrite the Grid Archives default CSS styles.</span><br/>
+            <span class="description">For example, to custom the box size and its background color, you can use custom css like:</span><br/>
+            <span class="description">#grid_archives ul li div.ga_post_main {background-color: #0D0D0D; width: 150px; height: 150px;}</span><br/>
+            <span class="description">[You can also copy all the Grid Archives default css from "Plugin Editor" here and make any modifications you like, these modifications won't be lost when you update the plugin.]</span>
+          </td>
+        </tr>
     </tbody></table>
 
     <br/>

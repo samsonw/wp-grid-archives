@@ -2,7 +2,7 @@
 /* 
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 0.8.0
+Version: 0.8.1
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '0.8.0');
+define('GRID_ARCHIVES_VERSION', '0.8.1');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -130,6 +130,7 @@ if (!class_exists("GridArchives")) {
                 return $text;
 
             $text = strip_tags($text);
+            $text = preg_replace('/\(\(([^\)]*?)\)\)/', '(${1})', $text);
             $text = preg_replace('|\[(.+?)\](.+?\[/\\1\])?|s', '', $text);
 
             $text = mb_substr($text, 0, $length, 'utf8') . " ...";

@@ -16,13 +16,22 @@
 
 #grid_archives ul li.ga_year_month {
   background: none repeat scroll 0 0 transparent;
-  color: #ABD1EA;
   font-size: 34px;
   padding: 20px 0;
   clear: left;
 }
 
+#grid_archives ul li.ga_year_month a, #grid_archives ul li.ga_year_month a:link, #grid_archives ul li.ga_year_month a:visited {
+  color: #ABD1EA;
+  text-decoration: none;
+}
+
+#grid_archives ul li.ga_year_month a:hover {
+  color: #FF9933;
+}
+
 #grid_archives ul li.ga_year_month .ga_monthly_summary {
+  display: inline-block;
   color: #555;
   font-family: georgia,verdana;
   font-size: 22px;
@@ -40,6 +49,8 @@
 
 #grid_archives ul li div.ga_post_main {
   background-color: #0D0D0D;
+/*  background-image: -moz-radial-gradient(0px 0px 0deg, circle farthest-corner, #3D3D3D 0%, #0D0D0D 60%);*/
+/*  background-image: -moz-radial-gradient(0px 0px 0deg, circle farthest-corner, #2B2B2B 0%, #0D0D0D 60%);*/
   /* background: -moz-linear-gradient(center top, #3D3D3D, #0D0D0D); */
   /* background: -webkit-gradient(linear, center top, center bottom, from(#3D3D3D), to(#0D0D0D)); */
   /* -pie-background: linear-gradient(center top, #3D3D3D, #0D0D0D); */

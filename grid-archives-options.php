@@ -21,8 +21,8 @@
           <td><input type="text" class="small-text" value="<?php echo $options['post_content_max_len']; ?>" id="post_content_max_len" name="post_content_max_len"> characters</td>
         </tr>
         <tr valign="top">
-          <th scope="row">Post Date</th>
-          <td><label for="post_date_not_display"><input type="checkbox" value="1" id="post_date_not_display" name="post_date_not_display" <?php if($options['post_date_not_display']) echo 'checked="checked"';?> > Do not display post date</label></td>
+          <th scope="row"><label for="post_date_not_display">Post Date</label></th>
+          <td><input type="checkbox" value="1" id="post_date_not_display" name="post_date_not_display" <?php if($options['post_date_not_display']) echo 'checked="checked"';?> > Do not display post date</td>
         </tr>
         <tr>
           <th scope="row">Post Date Format</th>
@@ -37,6 +37,14 @@
           	<p><a target="_blank" href="http://php.net/manual/en/function.date.php">Documentation on date formatting</a>. Click “Save Changes” to update sample output.</p>
             </fieldset>
           </td>
+        </tr>
+        <tr>
+          <th scope="row"><label for="post_hovered_highlight">Highlight Post Being Hovered:</label></th>
+          <td><input type="checkbox" value="1" id="post_hovered_highlight" name="post_hovered_highlight" <?php if($options['post_hovered_highlight']) echo 'checked="checked"';?> > Enable</td>
+        </tr>
+        <tr>
+          <th scope="row"><label for="monthly_summary_hovered_rotate">Rotate Monthly Summary Being Hovered:</label></th>
+          <td><input type="checkbox" value="1" id="monthly_summary_hovered_rotate" name="monthly_summary_hovered_rotate" <?php if($options['monthly_summary_hovered_rotate']) echo 'checked="checked"';?> > Enable</td>
         </tr>
         <tr>
           <th><label for="custom_css_styles">Custom CSS Styles</label></th>

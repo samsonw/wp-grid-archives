@@ -3,7 +3,7 @@ Contributors: samsonw
 Tags: archive, archives, grid
 Requires at least: 2.5
 Tested up to: 3.0
-Stable tag: 0.8.1
+Stable tag: 0.9.0
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -36,6 +36,11 @@ http://blog.samsonis.me/archives/
 
 
 == Changelog ==
+
+= 0.9.0 =
+* added an option to highlight the post if being mouse hovered over. (IE currently not supported)
+* added an option to rotate the monthly summary if being mouse hovered over. (IE currently not supported)
+* made the "year.month" text clickable to show all the posts in that particular month.
 
 = 0.8.1 =
 * fixed a compatible issue with wp-footnotes.

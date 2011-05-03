@@ -39,6 +39,21 @@
           </td>
         </tr>
         <tr>
+          <th scope="row">Month Date Format</th>
+          <td>
+            <fieldset><legend class="screen-reader-text"><span>Month Date Format</span></legend>
+              <label title="Y.m"><input type="radio" value="Y.m" name="month_date_format" <?php if($options['month_date_format'] === 'Y.m') echo 'checked="checked"';?> > <?php echo date("Y.m") ;?></label><br>
+              <label title="m.Y"><input type="radio" value="m.Y" name="month_date_format" <?php if($options['month_date_format'] === 'm.Y') echo 'checked="checked"';?> > <?php echo date("m.Y") ;?></label><br>
+              <label title="M Y"><input type="radio" value="M Y" name="month_date_format" <?php if($options['month_date_format'] === 'M Y') echo 'checked="checked"';?> > <?php echo date("M Y") ;?></label><br>
+              <label title="Y M"><input type="radio" value="Y M" name="month_date_format" <?php if($options['month_date_format'] === 'Y M') echo 'checked="checked"';?> > <?php echo date("Y M") ;?></label><br>
+              <label title="Y/m"><input type="radio" value="Y/m" name="month_date_format" <?php if($options['month_date_format'] === 'Y/m') echo 'checked="checked"';?> > <?php echo date("Y/m") ;?></label><br>
+              <label title="m/Y"><input type="radio" value="m/Y" name="month_date_format" <?php if($options['month_date_format'] === 'm/Y') echo 'checked="checked"';?> > <?php echo date("m/Y") ;?></label><br>
+              <label><input type="radio" value="custom" name="month_date_format" <?php if($options['month_date_format'] === 'custom') echo 'checked="checked"';?> > Custom: </label><input type="text" class="small-text" value="<?php echo $options['month_date_format_custom']; ?>" name="month_date_format_custom"> <?php echo date($options['month_date_format_custom']); ?>
+          	<p><a target="_blank" href="http://php.net/manual/en/function.date.php">Documentation on date formatting</a>. Click “Save Changes” to update sample output.</p>
+            </fieldset>
+          </td>
+        </tr>
+        <tr>
           <th scope="row"><label for="post_hovered_highlight">Highlight Post Being Hovered:</label></th>
           <td><input type="checkbox" value="1" id="post_hovered_highlight" name="post_hovered_highlight" <?php if($options['post_hovered_highlight']) echo 'checked="checked"';?> > Enable</td>
         </tr>

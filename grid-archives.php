@@ -2,7 +2,7 @@
 /* 
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 0.9.0
+Version: 1.0.0
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '0.9.0');
+define('GRID_ARCHIVES_VERSION', '1.0.0');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -99,12 +99,16 @@ if (!class_exists("GridArchives")) {
             if($post_date_format === 'custom'){
                 $post_date_format = $this->options['post_date_format_custom'];
             }
+            $month_date_format = $this->options['month_date_format'];
+            if($month_date_format === 'custom'){
+                $month_date_format = $this->options['month_date_format_custom'];
+            }
             $html = '<div id="grid_archives" class="grid_archives_column">'
                 . '<ul>';
             foreach ($posts as $yearmonth => $monthly_posts) {
                 list($year, $month) = explode('.', $yearmonth);
                 $html .= '<li class="ga_year_month">'
-                        . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. $yearmonth . '</a>';
+                        . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, $yearmonth) . '</a>';
                 if(!empty($monthly_summaries[$yearmonth])){
                     $html .= '<span class="ga_monthly_summary">“' . $monthly_summaries[$yearmonth] . '”';
                 }else {
@@ -153,7 +157,7 @@ if (!class_exists("GridArchives")) {
         }
 
         private function get_options() {
-            $options = array('post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
+            $options = array('post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
             $saved_options = get_option(GRID_ARCHIVES_OPTION_NAME);
 
             if (!empty($saved_options)) {
@@ -185,6 +189,9 @@ if (!class_exists("GridArchives")) {
                 $options['post_date_format'] = $_POST['post_date_format'];
                 $options['post_date_format_custom'] = stripslashes($_POST['post_date_format_custom']);
                 
+                $options['month_date_format'] = $_POST['month_date_format'];
+                $options['month_date_format_custom'] = stripslashes($_POST['month_date_format_custom']);
+
                 $options['post_hovered_highlight'] = isset($_POST['post_hovered_highlight']) ? (boolean)$_POST['post_hovered_highlight'] : false;
                 $options['monthly_summary_hovered_rotate'] = isset($_POST['monthly_summary_hovered_rotate']) ? (boolean)$_POST['monthly_summary_hovered_rotate'] : false;
                 

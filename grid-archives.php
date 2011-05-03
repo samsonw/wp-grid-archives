@@ -108,7 +108,7 @@ if (!class_exists("GridArchives")) {
             foreach ($posts as $yearmonth => $monthly_posts) {
                 list($year, $month) = explode('.', $yearmonth);
                 $html .= '<li class="ga_year_month">'
-                        . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, $yearmonth) . '</a>';
+                        . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, date('Y-m-d H:i:s', strtotime($year . '-' . $month))) . '</a>';
                 if(!empty($monthly_summaries[$yearmonth])){
                     $html .= '<span class="ga_monthly_summary">“' . $monthly_summaries[$yearmonth] . '”';
                 }else {

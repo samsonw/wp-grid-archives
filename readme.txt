@@ -3,7 +3,7 @@ Contributors: samsonw
 Tags: archive, archives, grid
 Requires at least: 2.5
 Tested up to: 3.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -36,6 +36,9 @@ http://blog.samsonis.me/archives/
 
 
 == Changelog ==
+
+= 1.0.1 =
+* fixed a month date format display issue
 
 = 1.0.0 =
 * added an option to customize the date display format for months

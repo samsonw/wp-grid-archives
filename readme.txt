@@ -3,7 +3,7 @@ Contributors: samsonw
 Tags: archive, archives, grid
 Requires at least: 2.5
 Tested up to: 3.1
-Stable tag: 1.0.2
+Stable tag: 1.1.0
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -12,6 +12,8 @@ Grid Archives offers a grid style archives page for WordPress.
 == Description ==
 
 *Grid Archives* offers a grid style archives page for WordPress, just put "[grid_archives]" in your Post or Page to show the grid-style archives.
+
+The default config will display all posts in every categories.  To display posts under one specific category, input [grid_archives category="Category name"] instead.
 
 View [live demo](http://blog.samsonis.me/archives)
 
@@ -36,6 +38,9 @@ http://blog.samsonis.me/archives/
 
 
 == Changelog ==
+
+= 1.1.0 =
+* added a shortcode category attribute to display articles under one specific category, grid-archives now support [grid_archives category="Category name"]
 
 = 1.0.2 =
 * the plugin is actually compatible with wordpress 3.1

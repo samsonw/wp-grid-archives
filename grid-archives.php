@@ -2,7 +2,7 @@
 /* 
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 1.0.2
+Version: 1.1.0
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '1.0.2');
+define('GRID_ARCHIVES_VERSION', '1.1.0');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -68,14 +68,16 @@ if (!class_exists("GridArchives")) {
         }
 
         // Grab all posts and filter them into an array
-        private function get_posts() {
+        private function get_posts($category) {
             // If we have a non-expire cached copy of the filtered posts array, use that instead
             if($posts = get_transient(GRID_ARCHIVES_POSTS_TRANSIENT_KEY)) {
                 return $posts;
             }
 
-            // Get a simple array of all posts
-            $rawposts = get_posts('numberposts=-1');
+            $category_id = get_cat_ID($category);
+
+            // Get a simple array of all posts under category $category_id
+            $rawposts = get_posts(array('numberposts' => -1, 'category' => $category_id));
 
             // Trim some memory
             foreach ( $rawposts as $key => $rawpost )
@@ -88,6 +90,10 @@ if (!class_exists("GridArchives")) {
                 $rawposts[$key] = null;
             }
             $rawposts = null; // More memory cleanup
+
+            if($posts === null) {
+                $posts = array();
+            }
 
             // Store the results into the WordPress transient, expires in 1 day (24 hours)
             set_transient(GRID_ARCHIVES_POSTS_TRANSIENT_KEY, $posts, 60*60*24);
@@ -209,8 +215,10 @@ if (!class_exists("GridArchives")) {
         }
 
         function display_archives($atts){
-            // $this->options = $this->get_options();
-            $posts = $this->get_posts();
+            extract( shortcode_atts( array(
+                'category' => 'General'
+                ), $atts ) );
+            $posts = $this->get_posts($category);
             $monthly_summaries = $this->parse_summaries($this->options['monthly_summaries']);
             return $this->compose_html($posts, $monthly_summaries);
         }

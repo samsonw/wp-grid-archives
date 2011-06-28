@@ -70,6 +70,13 @@
             <span class="description">[You can also copy all the Grid Archives default css from "Plugin Editor" here and make any modifications you like, these modifications won't be lost when you update the plugin.]</span>
           </td>
         </tr>
+        <tr>
+          <th scope="row"><label for="load_resources_only_in_grid_archives_page">Load Grid Archives resources only in specific pages:</label></th>
+          <td><input type="checkbox" value="1" id="load_resources_only_in_grid_archives_page" name="load_resources_only_in_grid_archives_page" <?php if($options['load_resources_only_in_grid_archives_page']) echo 'checked="checked"';?> > Enable&nbsp;&nbsp;<input type="text" id="grid_archives_page_names" style="width:38em;" value="<?php echo $options['grid_archives_page_names']; ?>" name="grid_archives_page_names" <?php if(!$options['load_resources_only_in_grid_archives_page']) echo 'disabled="disabled"';?> > <span class="description">(comma separated)</span><br/>
+            <span class="description">If enabled, Grid Archives plugin resources (css, js etc) will only be loaded in these specfic pages,</span><br/>
+            <span class="description">thus improve the load speed of other pages and posts.</span>
+          </td>
+        </tr>
     </tbody></table>
 
     <br/>
@@ -80,7 +87,7 @@
     <table class="form-table">
       <tbody><tr>
         <th><label for="default_monthly_summary">Default monthly summary:</label></th>
-        <td><input type="text" class="regular-text" value="<?php echo $options['default_monthly_summary']; ?>" id="default_monthly_summary" name="default_monthly_summary"> (leave it blank to show nothing)</td>
+        <td><input type="text" class="regular-text" value="<?php echo $options['default_monthly_summary']; ?>" id="default_monthly_summary" name="default_monthly_summary"> <span class="description">(leave it blank to show nothing)</span></td>
       </tr>
     </tbody></table>
     
@@ -89,7 +96,7 @@
 
     <textarea name="monthly_summaries" cols="80" rows="20"><?php echo $options["monthly_summaries"]; ?></textarea>
     
-  </div>
-  <p class="submit"><input type="submit" value="Save Changes" class="button-primary" name="submit"></p>
-</form>
+    <p class="submit"><input type="submit" value="Save Changes" class="button-primary" name="submit"></p>
+  </form>
+</div>
 

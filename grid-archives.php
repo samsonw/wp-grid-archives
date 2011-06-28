@@ -2,7 +2,7 @@
 /* 
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 1.1.0
+Version: 1.2.0
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '1.1.0');
+define('GRID_ARCHIVES_VERSION', '1.2.0');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -54,6 +54,7 @@ if (!class_exists("GridArchives")) {
             $this->plugin_url = WP_PLUGIN_URL . '/' . dirname(plugin_basename(__FILE__));
 
             add_action('wp_print_styles', array(&$this, 'load_styles'));
+            add_action('admin_print_scripts', array(&$this, 'load_admin_scripts'));
             add_shortcode('grid_archives', array(&$this, 'display_archives'));
 
             // admin menu
@@ -163,7 +164,7 @@ if (!class_exists("GridArchives")) {
         }
 
         private function get_options() {
-            $options = array('post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
+            $options = array('post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'load_resources_only_in_grid_archives_page' => false, 'grid_archives_page_names' => 'archives, grid-archives', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
             $saved_options = get_option(GRID_ARCHIVES_OPTION_NAME);
 
             if (!empty($saved_options)) {
@@ -187,6 +188,7 @@ if (!class_exists("GridArchives")) {
             if (isset($_POST['submit'])) {
                 check_admin_referer('grid-archives-nonce');
 
+                $orig_options = $options;
                 $options = array();
 
                 $options['post_title_max_len'] = (int)$_POST['post_title_max_len'];
@@ -201,6 +203,9 @@ if (!class_exists("GridArchives")) {
                 $options['post_hovered_highlight'] = isset($_POST['post_hovered_highlight']) ? (boolean)$_POST['post_hovered_highlight'] : false;
                 $options['monthly_summary_hovered_rotate'] = isset($_POST['monthly_summary_hovered_rotate']) ? (boolean)$_POST['monthly_summary_hovered_rotate'] : false;
                 
+                $options['load_resources_only_in_grid_archives_page'] = isset($_POST['load_resources_only_in_grid_archives_page']) ? (boolean)$_POST['load_resources_only_in_grid_archives_page'] : false;
+                $options['grid_archives_page_names'] = $options['load_resources_only_in_grid_archives_page'] ? stripslashes($_POST['grid_archives_page_names']) : $orig_options['grid_archives_page_names'];
+
                 $options['custom_css_styles'] = stripslashes($_POST['custom_css_styles']);
                 
                 $options['default_monthly_summary'] = htmlspecialchars(stripslashes($_POST['default_monthly_summary']));
@@ -229,23 +234,42 @@ if (!class_exists("GridArchives")) {
 
         function load_styles(){
             $this->options = $this->get_options();
-            
-            $css_url = $this->plugin_url . '/grid-archives.css';
-            wp_register_style('grid_archives', $css_url, array(), GRID_ARCHIVES_VERSION, 'screen');
-            wp_enqueue_style('grid_archives');
-            
-            if($this->options['post_hovered_highlight'] || $this->options['monthly_summary_hovered_rotate']) {
-                $effect_css_url = $this->plugin_url . '/grid-archives-effect-css.php';
-                wp_register_style('grid_archives_effect', $effect_css_url, array(), GRID_ARCHIVES_VERSION, 'screen');
-                wp_enqueue_style('grid_archives_effect');
+
+            if($this->options['load_resources_only_in_grid_archives_page']){
+                $load_extra = false;
+                // if enabled, only load css in those specific files
+               foreach(array_map('trim', explode(",", $this->options['grid_archives_page_names'])) as $page_name){
+                   $load_extra = is_page($page_name);
+                   if($load_extra) break;
+               }
+            }else{
+                // disabled, load css
+               $load_extra = true;
             }
-            
-            $custom_css_styles = trim($this->options['custom_css_styles']);
-            if(!empty($custom_css_styles)) {
-                $custom_css_url = $this->plugin_url . '/grid-archives-custom-css.php';
-                wp_register_style('grid_archives_custom', $custom_css_url, array(), GRID_ARCHIVES_VERSION, 'screen');
-                wp_enqueue_style('grid_archives_custom');
+            if($load_extra){
+                $css_url = $this->plugin_url . '/grid-archives.css';
+                wp_register_style('grid_archives', $css_url, array(), GRID_ARCHIVES_VERSION, 'screen');
+                wp_enqueue_style('grid_archives');
+
+                if($this->options['post_hovered_highlight'] || $this->options['monthly_summary_hovered_rotate']) {
+                    $effect_css_url = $this->plugin_url . '/grid-archives-effect-css.php';
+                    wp_register_style('grid_archives_effect', $effect_css_url, array(), GRID_ARCHIVES_VERSION, 'screen');
+                    wp_enqueue_style('grid_archives_effect');
+                }
+
+                $custom_css_styles = trim($this->options['custom_css_styles']);
+                if(!empty($custom_css_styles)) {
+                    $custom_css_url = $this->plugin_url . '/grid-archives-custom-css.php';
+                    wp_register_style('grid_archives_custom', $custom_css_url, array(), GRID_ARCHIVES_VERSION, 'screen');
+                    wp_enqueue_style('grid_archives_custom');
+                }
             }
+        }
+
+        function load_admin_scripts(){
+            $admin_script_url = $this->plugin_url . '/grid-archives-options.js';
+            wp_register_script('grid_archives_admin_script', $admin_script_url, 'jquery', GRID_ARCHIVES_VERSION);
+            wp_enqueue_script('grid_archives_admin_script');
         }
 
         function delete_cache() {

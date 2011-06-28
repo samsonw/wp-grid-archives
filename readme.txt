@@ -3,7 +3,7 @@ Contributors: samsonw
 Tags: archive, archives, grid
 Requires at least: 2.5
 Tested up to: 3.1
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -38,6 +38,9 @@ http://blog.samsonis.me/archives/
 
 
 == Changelog ==
+
+= 1.2.0 =
+* added a option to enable load plugin resources only in specific pages and posts.
 
 = 1.1.0 =
 * added a shortcode category attribute to display articles under one specific category, grid-archives now support [grid_archives category="Category name"]

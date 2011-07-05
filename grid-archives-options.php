@@ -63,7 +63,7 @@
         </tr>
         <tr>
           <th><label for="custom_css_styles">Custom CSS Styles</label></th>
-          <td><textarea id="custom_css_styles" name="custom_css_styles" cols="60" rows="5"><?php echo $options['custom_css_styles']; ?></textarea><br/>
+          <td><textarea id="custom_css_styles" name="custom_css_styles" cols="60" rows="5" style="min-width:40em;"><?php echo $options['custom_css_styles']; ?></textarea><br/>
             <span class="description">These custom CSS styles will overwrite the Grid Archives default CSS styles.</span><br/>
             <span class="description">For example, to custom the box size and its background color, you can use custom css like:</span><br/>
             <span class="description">#grid_archives ul li div.ga_post_main {background-color: #0D0D0D; width: 150px; height: 150px;}</span><br/>
@@ -94,7 +94,7 @@
     <br/>
     <p>Input the month summary in the form "year.month##description", one month per line, the description will be displayed beside the month in the archives page:</p>
 
-    <textarea name="monthly_summaries" cols="80" rows="20"><?php echo $options["monthly_summaries"]; ?></textarea>
+    <textarea name="monthly_summaries" cols="80" rows="20" style="min-width:58em;"><?php echo $options["monthly_summaries"]; ?></textarea>
     
     <p class="submit"><input type="submit" value="Save Changes" class="button-primary" name="submit"></p>
   </form>

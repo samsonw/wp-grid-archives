@@ -3,7 +3,7 @@ Contributors: samsonw
 Tags: archive, archives, grid
 Requires at least: 2.5
 Tested up to: 3.2
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -34,10 +34,15 @@ View [live demo](http://blog.samsonis.me/archives)
 
 
 == Screenshots ==
-http://blog.samsonis.me/archives/
+* http://blog.samsonis.me/archives/
+* http://blog.samsonis.me/archives-of-the-year/
 
 
 == Changelog ==
+
+= 1.4.0 =
+* added an compact (expand) display style
+* added 3 shortcode attributes (style, month_date_format, post_date_format), grid-archives now supports [grid_archives style="classic|compact" month_date_format="Y.m" post_date_format="j M Y"]
 
 = 1.3.0 =
 * tiny UI tweak in plugin admin setting page, make it compatible with the Refreshed Administative UI of wordpress 3.2.

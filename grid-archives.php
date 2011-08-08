@@ -2,7 +2,7 @@
 /* 
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 1.3.0
+Version: 1.4.0
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '1.3.0');
+define('GRID_ARCHIVES_VERSION', '1.4.0');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -54,6 +54,7 @@ if (!class_exists("GridArchives")) {
             $this->plugin_url = WP_PLUGIN_URL . '/' . dirname(plugin_basename(__FILE__));
 
             add_action('wp_print_styles', array(&$this, 'load_styles'));
+            add_action('wp_print_scripts', array(&$this, 'load_scripts'));
             add_action('admin_print_scripts', array(&$this, 'load_admin_scripts'));
             add_shortcode('grid_archives', array(&$this, 'display_archives'));
 
@@ -86,7 +87,7 @@ if (!class_exists("GridArchives")) {
 
             // Loop through each post and sort it into a structured array
             foreach( $rawposts as $key => $post ) {
-                $posts[ mysql2date('Y.m', $post->post_date) ][] = $post;
+                $posts[ mysql2date('Y', $post->post_date) ][ mysql2date('Y.m', $post->post_date) ][] = $post;
 
                 $rawposts[$key] = null;
             }
@@ -101,40 +102,95 @@ if (!class_exists("GridArchives")) {
             return $posts;
         }
 
-        private function compose_html($posts, $monthly_summaries) {
-            $post_date_format = $this->options['post_date_format'];
-            if($post_date_format === 'custom'){
-                $post_date_format = $this->options['post_date_format_custom'];
+        private function get_date_format($attr) {
+            if($attr['month_date_format'] === 'default'){
+                $month_date_format = $this->options['month_date_format'];
+                if($month_date_format === 'custom'){
+                    $month_date_format = $this->options['month_date_format_custom'];
+                }
+            }else{
+                $month_date_format = $attr['month_date_format'];
             }
-            $month_date_format = $this->options['month_date_format'];
-            if($month_date_format === 'custom'){
-                $month_date_format = $this->options['month_date_format_custom'];
+
+            if($attr['post_date_format'] === 'default'){
+                $post_date_format = $this->options['post_date_format'];
+                if($post_date_format === 'custom'){
+                    $post_date_format = $this->options['post_date_format_custom'];
+                }
+            }else{
+                $post_date_format = $attr['post_date_format'];
             }
+
+            return array($month_date_format, $post_date_format);
+        }
+
+        private function compose_html_classic($posts, $monthly_summaries, $attr) {
+            list($month_date_format, $post_date_format) = $this->get_date_format($attr);
             $html = '<div id="grid_archives" class="grid_archives_column">'
                 . '<ul>';
-            foreach ($posts as $yearmonth => $monthly_posts) {
-                list($year, $month) = explode('.', $yearmonth);
-                $html .= '<li class="ga_year_month">'
-                        . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, date('Y-m-d H:i:s', strtotime($year . '-' . $month))) . '</a>';
-                if(!empty($monthly_summaries[$yearmonth])){
-                    $html .= '<span class="ga_monthly_summary">“' . $monthly_summaries[$yearmonth] . '”';
-                }else {
-                    $html .= '<span class="ga_monthly_summary">' . $this->options['default_monthly_summary'];
+            foreach ($posts as $post_year => $yearly_posts) {
+                foreach ($yearly_posts as $yearmonth => $monthly_posts) {
+                    list($year, $month) = explode('.', $yearmonth);
+                    $html .= '<li class="ga_year_month">'
+                            . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, date('Y-m-d H:i:s', strtotime($year . '-' . $month))) . '</a>';
+                    if(!empty($monthly_summaries[$yearmonth])){
+                        $html .= '<span class="ga_monthly_summary">“' . $monthly_summaries[$yearmonth] . '”';
+                    }else {
+                        $html .= '<span class="ga_monthly_summary">' . $this->options['default_monthly_summary'];
+                    }
+                    $html .= '</span></li>';
+                    foreach ($monthly_posts as $post) {
+                        $html .= '<li class="ga_post">'
+                            . '<div class="ga_post_main">'
+                            . '<a href="' . get_permalink( $post->ID ) . '" title="' . $post->post_title . '">' . $this->get_excerpt($post->post_title, $this->options['post_title_max_len']) . '</a>'
+                            . '<p>' . $post->post_content . '</p>'
+                            . '</div>';
+                        if(!$this->options['post_date_not_display']){
+                            $html .= '<p class="ga_post_date">' . mysql2date($post_date_format, $post->post_date) . '</p>';
+                        }
+                        $html .= '</li>';
+                    }
                 }
-                $html .= '</span></li>';
-                foreach ($monthly_posts as $post) {
-                    $html .= '<li class="ga_post">'
+            }
+            $html .= '</ul>' . '</div>';
+            return $html;
+        }
+
+        private function compose_html_compact($posts, $monthly_summaries, $attr) {
+            list($month_date_format, $post_date_format) = $this->get_date_format($attr);
+            $html = '<div id="grid_archives" class="grid_archives_column">';
+            $html .= '<ul class="ga_year_list">';
+            foreach ($posts as $year => $yearly_posts) {
+                $html .= '<li><a href="' . get_year_link($year) . '" title="Archives of Year ' . $year . '">' . $year . '</a></li>';
+            }
+            $html .= '</ul>';
+            foreach ($posts as $post_year => $yearly_posts) {
+                $html .= '<ul class="ga_panes">';
+                foreach ($yearly_posts as $yearmonth => $monthly_posts) {
+                    list($year, $month) = explode('.', $yearmonth);
+                    $html .= '<li class="ga_year_month">'
+                    . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, date('Y-m-d H:i:s', strtotime($year . '-' . $month))) . '</a>';
+                    if(!empty($monthly_summaries[$yearmonth])){
+                        $html .= '<span class="ga_monthly_summary">“' . $monthly_summaries[$yearmonth] . '”';
+                    }else {
+                        $html .= '<span class="ga_monthly_summary">' . $this->options['default_monthly_summary'];
+                    }
+                    $html .= '</span></li>';
+                    foreach ($monthly_posts as $post) {
+                        $html .= '<li class="ga_post">'
                         . '<div class="ga_post_main">'
                         . '<a href="' . get_permalink( $post->ID ) . '" title="' . $post->post_title . '">' . $this->get_excerpt($post->post_title, $this->options['post_title_max_len']) . '</a>'
                         . '<p>' . $post->post_content . '</p>'
                         . '</div>';
-                    if(!$this->options['post_date_not_display']){
-                        $html .= '<p class="ga_post_date">' . mysql2date($post_date_format, $post->post_date) . '</p>';
+                        if(!$this->options['post_date_not_display']){
+                            $html .= '<p class="ga_post_date">' . mysql2date($post_date_format, $post->post_date) . '</p>';
+                        }
+                        $html .= '</li>';
                     }
-                    $html .= '</li>';
                 }
+                $html .= '</ul>';
             }
-            $html .= '</ul>' . '</div>';
+            $html .= '</div>';
             return $html;
         }
 
@@ -164,7 +220,7 @@ if (!class_exists("GridArchives")) {
         }
 
         private function get_options() {
-            $options = array('post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'load_resources_only_in_grid_archives_page' => false, 'grid_archives_page_names' => 'archives, grid-archives', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
+            $options = array('style_format' => 'classic', 'post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'load_resources_only_in_grid_archives_page' => false, 'grid_archives_page_names' => 'archives, grid-archives', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
             $saved_options = get_option(GRID_ARCHIVES_OPTION_NAME);
 
             if (!empty($saved_options)) {
@@ -190,6 +246,8 @@ if (!class_exists("GridArchives")) {
 
                 $orig_options = $options;
                 $options = array();
+
+                $options['style_format'] = $_POST['style_format'];
 
                 $options['post_title_max_len'] = (int)$_POST['post_title_max_len'];
                 $options['post_content_max_len'] = (int)$_POST['post_content_max_len'];
@@ -219,34 +277,54 @@ if (!class_exists("GridArchives")) {
             include_once("grid-archives-options.php");
         }
 
+        private function get_style_format($style){
+            switch ($style) {
+                case 'classic':
+                case 'compact':
+                    break;
+                case 'default':
+                default:
+                    $style = $this->options['style_format'];
+                    break;
+            }
+            return $style;
+        }
+
         function display_archives($atts){
             extract( shortcode_atts( array(
-                'category' => 'General'
+                'category' => 'General',
+                'style' => 'default',
+                'month_date_format' => 'default',
+                'post_date_format' => 'default'
                 ), $atts ) );
             $posts = $this->get_posts($category);
             $monthly_summaries = $this->parse_summaries($this->options['monthly_summaries']);
-            return $this->compose_html($posts, $monthly_summaries);
+            return call_user_func(array($this, 'compose_html_' . $this->get_style_format($style)), $posts, $monthly_summaries, array('month_date_format' => $month_date_format, 'post_date_format' => $post_date_format));
         }
 
         function grid_archives_settings() {
             add_options_page('Grid Archives Settings', 'Grid Archives', 'manage_options', 'grid-archives-settings', array(&$this, 'handle_grid_archives_settings'));
         }
 
-        function load_styles(){
-            $this->options = $this->get_options();
-
+        private function load_extra_resources(){
             if($this->options['load_resources_only_in_grid_archives_page']){
                 $load_extra = false;
-                // if enabled, only load css in those specific files
-               foreach(array_map('trim', explode(",", $this->options['grid_archives_page_names'])) as $page_name){
+                // if enabled, only load resources file (css, js etc) in those specific files
+                foreach(array_map('trim', explode(",", $this->options['grid_archives_page_names'])) as $page_name){
                    $load_extra = is_page($page_name);
                    if($load_extra) break;
                }
             }else{
-                // disabled, load css
+                // disabled, load
                $load_extra = true;
             }
-            if($load_extra){
+            return $load_extra;
+        }
+
+        function load_styles(){
+            $this->options = $this->get_options();
+
+            if($this->load_extra_resources()){
                 $css_url = $this->plugin_url . '/grid-archives.css';
                 wp_register_style('grid_archives', $css_url, array(), GRID_ARCHIVES_VERSION, 'screen');
                 wp_enqueue_style('grid_archives');
@@ -263,6 +341,16 @@ if (!class_exists("GridArchives")) {
                     wp_register_style('grid_archives_custom', $custom_css_url, array(), GRID_ARCHIVES_VERSION, 'screen');
                     wp_enqueue_style('grid_archives_custom');
                 }
+            }
+        }
+
+        function load_scripts(){
+            if($this->load_extra_resources()){
+                $jquery_tools_url = $this->plugin_url . '/jquery.tools.tabs.min.js';
+                wp_register_script('jquery.tools', $jquery_tools_url, 'jquery' , '1.2.5');
+                $js_url = $this->plugin_url . '/grid-archives.js';
+                wp_register_script('grid_archives', $js_url, array('jquery', 'jquery.tools') , GRID_ARCHIVES_VERSION);
+                wp_enqueue_script('grid_archives');
             }
         }
 

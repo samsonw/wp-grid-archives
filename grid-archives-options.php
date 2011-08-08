@@ -13,6 +13,13 @@
 
     <table class="form-table">
       <tbody><tr>
+          <th><label for="style_format">Style Format</label></th>
+          <td>
+            <label title="Classic Style"><input type="radio" value="classic" name="style_format" <?php if($options['style_format'] === 'classic') echo 'checked="checked"';?> > Classic</label> (<a target="_blank" href="http://blog.samsonis.me/archives/">Example</a>)
+            <label title="Compact Style"><input type="radio" value="compact" name="style_format" <?php if($options['style_format'] === 'compact') echo 'checked="checked"';?> > Compact</label> (<a target="_blank" href="http://blog.samsonis.me/archives-of-the-year/">Example</a>)
+          </td>
+        </tr>
+        <tr>
           <th><label for="post_title_max_len">Post Title Maximum Length</label></th>
           <td><input type="text" class="small-text" value="<?php echo $options['post_title_max_len']; ?>" id="post_title_max_len" name="post_title_max_len"> characters</td>
         </tr>

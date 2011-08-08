@@ -34,8 +34,9 @@ View [live demo](http://blog.samsonis.me/archives)
 
 
 == Screenshots ==
-* http://blog.samsonis.me/archives/
-* http://blog.samsonis.me/archives-of-the-year/
+http://blog.samsonis.me/archives/
+
+http://blog.samsonis.me/archives-of-the-year/
 
 
 == Changelog ==

@@ -1,6 +1,7 @@
 jQuery(document).ready(function($) {
-  $("ul.ga_year_list").tabs("ul.ga_panes", {
+  $("ul.ga_year_list").tabs("ul.ga_pane", {
       effect: 'fade',
-      fadeInSpeed: 'slow'
+      fadeOutSpeed: 50,
+      fadeInSpeed: 1200
   });
 });

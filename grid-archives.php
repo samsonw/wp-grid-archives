@@ -2,7 +2,7 @@
 /* 
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 1.4.0
+Version: 1.4.1
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '1.4.0');
+define('GRID_ARCHIVES_VERSION', '1.4.1');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -49,13 +49,14 @@ define('GRID_ARCHIVES_OPTION_NAME', 'grid_archives_options');
 if (!class_exists("GridArchives")) {
     class GridArchives {
         var $options;
+        var $style;
 
         function GridArchives() {
             $this->plugin_url = WP_PLUGIN_URL . '/' . dirname(plugin_basename(__FILE__));
 
             add_action('wp_print_styles', array(&$this, 'load_styles'));
-            add_action('wp_print_scripts', array(&$this, 'load_scripts'));
             add_action('admin_print_scripts', array(&$this, 'load_admin_scripts'));
+            add_action('wp_print_footer_scripts', array(&$this, 'load_scripts'));
             add_shortcode('grid_archives', array(&$this, 'display_archives'));
 
             // admin menu
@@ -165,7 +166,7 @@ if (!class_exists("GridArchives")) {
             }
             $html .= '</ul>';
             foreach ($posts as $post_year => $yearly_posts) {
-                $html .= '<ul class="ga_panes">';
+                $html .= '<ul class="ga_pane">';
                 foreach ($yearly_posts as $yearmonth => $monthly_posts) {
                     list($year, $month) = explode('.', $yearmonth);
                     $html .= '<li class="ga_year_month">'
@@ -297,9 +298,10 @@ if (!class_exists("GridArchives")) {
                 'month_date_format' => 'default',
                 'post_date_format' => 'default'
                 ), $atts ) );
+            $this->style = $this->get_style_format($style);
             $posts = $this->get_posts($category);
             $monthly_summaries = $this->parse_summaries($this->options['monthly_summaries']);
-            return call_user_func(array($this, 'compose_html_' . $this->get_style_format($style)), $posts, $monthly_summaries, array('month_date_format' => $month_date_format, 'post_date_format' => $post_date_format));
+            return call_user_func(array($this, 'compose_html_' . $this->style), $posts, $monthly_summaries, array('month_date_format' => $month_date_format, 'post_date_format' => $post_date_format));
         }
 
         function grid_archives_settings() {
@@ -345,12 +347,12 @@ if (!class_exists("GridArchives")) {
         }
 
         function load_scripts(){
-            if($this->load_extra_resources()){
+            if($this->load_extra_resources() && 'compact' === $this->style){
                 $jquery_tools_url = $this->plugin_url . '/jquery.tools.tabs.min.js';
                 wp_register_script('jquery.tools', $jquery_tools_url, 'jquery' , '1.2.5');
                 $js_url = $this->plugin_url . '/grid-archives.js';
                 wp_register_script('grid_archives', $js_url, array('jquery', 'jquery.tools') , GRID_ARCHIVES_VERSION);
-                wp_enqueue_script('grid_archives');
+                wp_print_scripts('grid_archives');
             }
         }
 

@@ -18,19 +18,40 @@
 }
 
 #grid_archives ul.ga_year_list{
-  padding-bottom: 10px;
+  padding: 15px 0 10px;
 }
 
 #grid_archives ul.ga_year_list li{
   font-size: 36px;
   float: left;
   list-style: none outside none;
-  margin: 0 15px 0 0;
+  margin: 0 15px 12px 0;
+  padding: 8px 10px 9px;
+  background-color: #0D0D0D;
+  opacity: 0.8;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  -moz-box-shadow: 5px 5px 10px #444;
+  -webkit-box-shadow: 5px 5px 10px #444;
+  box-shadow: 5px 5px 10px #444;
 }
 
-#grid_archives ul.ga_year_list li .current{
+#grid_archives ul.ga_year_list li:hover{
+  -moz-box-shadow: 3px 2px 5px #A2A2A2;
+  -webkit-box-shadow: 3px 2px 5px #A2A2A2;
+  box-shadow: 3px 2px 5px #A2A2A2;
+}
+
+#grid_archives ul.ga_year_list li.current{
+  -moz-box-shadow: 3px 2px 5px #A2A2A2;
+  -webkit-box-shadow: 3px 2px 5px #A2A2A2;
+  box-shadow: 3px 2px 5px #A2A2A2;
+}
+
+#grid_archives ul.ga_year_list li a.current{
   color: #FF9933 !important;
-  border-bottom: 2px solid #FF9933 !important;
+  /* border-bottom: 2px solid #FF9933 !important; */
 }
 
 #grid_archives ul li.ga_year_month {

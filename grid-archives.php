@@ -2,7 +2,7 @@
 /* 
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 1.4.1
+Version: 1.5.0
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '1.4.1');
+define('GRID_ARCHIVES_VERSION', '1.5.0');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -159,6 +159,10 @@ if (!class_exists("GridArchives")) {
 
         private function compose_html_compact($posts, $monthly_summaries, $attr) {
             list($month_date_format, $post_date_format) = $this->get_date_format($attr);
+            $compact_month_list_date_format = $this->options['compact_month_list_date_format'];
+            if($compact_month_list_date_format === 'custom'){
+                $compact_month_list_date_format = $this->options['compact_month_list_date_format_custom'];
+            }
             $html = '<div id="grid_archives" class="grid_archives_column">';
             $html .= '<ul class="ga_year_list">';
             foreach ($posts as $year => $yearly_posts) {
@@ -166,10 +170,25 @@ if (!class_exists("GridArchives")) {
             }
             $html .= '</ul>';
             foreach ($posts as $post_year => $yearly_posts) {
-                $html .= '<ul class="ga_pane">';
+                $html .= '<div class="ga_pane">';
+                if(!$this->options['compact_hide_month_list']){
+                    $html .= '<ul class="ga_month_list">';
+                    $month_numbers = $this->get_months('numeric');
+                    foreach ( range( 12, 1 ) as $i ) {
+                        $month_name = mysql2date($compact_month_list_date_format, date('Y-m-d H:i:s', strtotime($post_year . '-' . $month_numbers[$i])));
+                        $month_post_count = count($yearly_posts[$post_year . '.' . $month_numbers[$i]]);
+                        if ($month_post_count > 0) {
+                            $html .= '<li class="ga_active_month"><a href="#' . $post_year . '_' . $month_numbers[$i] . '" title="' . $month_post_count . ' ' . ($month_post_count === 1 ? 'post' : 'posts') . '">' . $month_name . '</a></li>';
+                        }else {
+                            $html .= '<li><span title="No post">' . $month_name . '</span></li>';
+                        }
+                    }
+                    $html .= '</ul>';
+                }
+                $html .= '<ul>';
                 foreach ($yearly_posts as $yearmonth => $monthly_posts) {
                     list($year, $month) = explode('.', $yearmonth);
-                    $html .= '<li class="ga_year_month">'
+                    $html .= '<li id="' . $year . '_' . $month . '" class="ga_year_month">'
                     . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, date('Y-m-d H:i:s', strtotime($year . '-' . $month))) . '</a>';
                     if(!empty($monthly_summaries[$yearmonth])){
                         $html .= '<span class="ga_monthly_summary">“' . $monthly_summaries[$yearmonth] . '”';
@@ -189,10 +208,27 @@ if (!class_exists("GridArchives")) {
                         $html .= '</li>';
                     }
                 }
-                $html .= '</ul>';
+                $html .= '</ul></div>';
             }
             $html .= '</div>';
             return $html;
+        }
+
+        private function get_months( $format = 'long' ) {
+            global $wp_locale;
+            $months = array();
+            foreach ( range( 1, 12 ) as $i ) {
+                if ( 'numeric' == $format ) {
+                    $months[$i] = zeroise( $i, 2 );
+                    continue;
+                }
+                $month = $wp_locale->get_month( $i );
+                if ( 'short' == $format ) {
+                    $month = $wp_locale->get_month_abbrev( $month );
+                }
+                $months[$i] = esc_html( $month );
+            }
+            return $months;
         }
 
         private function get_excerpt($text, $length = 90) {
@@ -221,7 +257,7 @@ if (!class_exists("GridArchives")) {
         }
 
         private function get_options() {
-            $options = array('style_format' => 'classic', 'post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'load_resources_only_in_grid_archives_page' => false, 'grid_archives_page_names' => 'archives, grid-archives', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
+            $options = array('style_format' => 'classic', 'compact_hide_month_list' => false, 'compact_month_list_date_format' => 'F', 'compact_month_list_date_format_custom' => 'F', 'post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'load_resources_only_in_grid_archives_page' => false, 'grid_archives_page_names' => 'archives, grid-archives', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
             $saved_options = get_option(GRID_ARCHIVES_OPTION_NAME);
 
             if (!empty($saved_options)) {
@@ -249,6 +285,11 @@ if (!class_exists("GridArchives")) {
                 $options = array();
 
                 $options['style_format'] = $_POST['style_format'];
+
+                $options['compact_hide_month_list'] = isset($_POST['compact_hide_month_list']) ? (boolean)$_POST['compact_hide_month_list'] : false;
+
+                $options['compact_month_list_date_format'] = $_POST['compact_month_list_date_format'];
+                $options['compact_month_list_date_format_custom'] = stripslashes($_POST['compact_month_list_date_format_custom']);
 
                 $options['post_title_max_len'] = (int)$_POST['post_title_max_len'];
                 $options['post_content_max_len'] = (int)$_POST['post_content_max_len'];

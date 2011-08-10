@@ -3,7 +3,7 @@ Contributors: samsonw
 Tags: archive, archives, grid
 Requires at least: 2.5
 Tested up to: 3.2
-Stable tag: 1.4.1
+Stable tag: 1.5.0
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -40,6 +40,11 @@ http://blog.samsonis.me/archives-of-the-year/
 
 
 == Changelog ==
+
+= 1.5.0 =
+* added month list view in 'compact' mode, the page will smoothly scroll to that month if clicked
+* added an option to hide the month list, thus disable the scroll capability
+* added an option to customize the date display format for month list
 
 = 1.4.1 =
 * tweaked the year list display style

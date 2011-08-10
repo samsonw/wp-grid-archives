@@ -19,6 +19,28 @@
             <label title="Compact Style"><input type="radio" value="compact" name="style_format" <?php if($options['style_format'] === 'compact') echo 'checked="checked"';?> > Compact</label> (<a target="_blank" href="http://blog.samsonis.me/archives-of-the-year/">Example</a>)
           </td>
         </tr>
+        <tr class="compact_settings" <?php if($options['style_format'] === 'classic') echo 'style="display:none;"';?> >
+          <th><label for="compact_hide_month_list">"Compact" Mode Month List</label></th>
+          <td><input type="checkbox" value="1" id="compact_hide_month_list" name="compact_hide_month_list" <?php if($options['compact_hide_month_list']) echo 'checked="checked"';?> > Do not display month list in "Compact" mode</td>
+        </tr>
+        <tr class="compact_settings" <?php if($options['style_format'] === 'classic') echo 'style="display:none;"';?> >
+          <th scope="row">"Compact" Mode Month List Date Format</th>
+          <td>
+            <fieldset><legend class="screen-reader-text"><span>Month List Date Format</span></legend>
+              <label title="F"><input type="radio" value="F" name="compact_month_list_date_format" <?php if($options['compact_month_list_date_format'] === 'F') echo 'checked="checked"';?> > <?php echo date("F") ;?></label><br>
+              <label title="M"><input type="radio" value="M" name="compact_month_list_date_format" <?php if($options['compact_month_list_date_format'] === 'M') echo 'checked="checked"';?> > <?php echo date("M") ;?></label><br>
+              <label title="m"><input type="radio" value="m" name="compact_month_list_date_format" <?php if($options['compact_month_list_date_format'] === 'm') echo 'checked="checked"';?> > <?php echo date("m") ;?></label><br>
+              <label title="Y.m"><input type="radio" value="Y.m" name="compact_month_list_date_format" <?php if($options['compact_month_list_date_format'] === 'Y.m') echo 'checked="checked"';?> > <?php echo date("Y.m") ;?></label><br>
+              <label title="m.Y"><input type="radio" value="m.Y" name="compact_month_list_date_format" <?php if($options['compact_month_list_date_format'] === 'm.Y') echo 'checked="checked"';?> > <?php echo date("m.Y") ;?></label><br>
+              <label title="M Y"><input type="radio" value="M Y" name="compact_month_list_date_format" <?php if($options['compact_month_list_date_format'] === 'M Y') echo 'checked="checked"';?> > <?php echo date("M Y") ;?></label><br>
+              <label title="Y M"><input type="radio" value="Y M" name="compact_month_list_date_format" <?php if($options['compact_month_list_date_format'] === 'Y M') echo 'checked="checked"';?> > <?php echo date("Y M") ;?></label><br>
+              <label title="Y/m"><input type="radio" value="Y/m" name="compact_month_list_date_format" <?php if($options['compact_month_list_date_format'] === 'Y/m') echo 'checked="checked"';?> > <?php echo date("Y/m") ;?></label><br>
+              <label title="m/Y"><input type="radio" value="m/Y" name="compact_month_list_date_format" <?php if($options['compact_month_list_date_format'] === 'm/Y') echo 'checked="checked"';?> > <?php echo date("m/Y") ;?></label><br>
+              <label><input type="radio" value="custom" name="compact_month_list_date_format" <?php if($options['compact_month_list_date_format'] === 'custom') echo 'checked="checked"';?> > Custom: </label><input type="text" class="small-text" value="<?php echo $options['compact_month_list_date_format_custom']; ?>" name="compact_month_list_date_format_custom"> <?php echo date($options['compact_month_list_date_format_custom']); ?>
+              <p><a target="_blank" href="http://php.net/manual/en/function.date.php">Documentation on date formatting</a>. Click “Save Changes” to update sample output.</p>
+            </fieldset>
+          </td>
+        </tr>
         <tr>
           <th><label for="post_title_max_len">Post Title Maximum Length</label></th>
           <td><input type="text" class="small-text" value="<?php echo $options['post_title_max_len']; ?>" id="post_title_max_len" name="post_title_max_len"> characters</td>

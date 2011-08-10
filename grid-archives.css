@@ -54,6 +54,32 @@
   /* border-bottom: 2px solid #FF9933 !important; */
 }
 
+#grid_archives ul.ga_month_list li{
+  float: left;
+  font-size: 12px;
+  background-color: #0D0D0D;
+  color: #555;
+  opacity: 0.9;
+  list-style: none outside none;
+  margin: 0 12px 10px 0;
+  padding: 8px 10px 9px;
+  border-radius: 8px;
+  box-shadow: 3px 3px 5px #444;
+}
+
+#grid_archives ul.ga_month_list li.ga_active_month:hover {
+  box-shadow: 1px 1px 3px #A2A2A2;
+}
+
+#grid_archives ul.ga_month_list li a, #grid_archives ul.ga_month_list li a:link, #grid_archives ul.ga_month_list li a:visited {
+  color: #ABD1EA;
+  text-decoration: none;
+}
+
+#grid_archives ul.ga_month_list li a:hover {
+  color: #FF9933;
+}
+
 #grid_archives ul li.ga_year_month {
   background: none repeat scroll 0 0 transparent;
   font-size: 34px;

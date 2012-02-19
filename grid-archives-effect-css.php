@@ -7,9 +7,9 @@ $options = get_option('grid_archives_options');
 if ($options['post_hovered_highlight']) {
     echo <<< CSS
 #grid_archives ul li div.ga_post_main:hover {
-  -moz-box-shadow: 3px 2px 5px #A2A2A2;
-  -webkit-box-shadow: 3px 2px 5px #A2A2A2;
-  box-shadow: 3px 2px 5px #A2A2A2;
+  -moz-box-shadow: 4px 3px 5px #111;
+  -webkit-box-shadow: 4px 3px 5px #111;
+  box-shadow: 4px 3px 5px #111;
 }
 CSS;
 }

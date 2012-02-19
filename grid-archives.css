@@ -72,8 +72,10 @@
 }
 
 #grid_archives ul.ga_month_list li a, #grid_archives ul.ga_month_list li a:link, #grid_archives ul.ga_month_list li a:visited {
-  color: #ABD1EA;
+  /* color: #ABD1EA; */
+  color: #7493BF;
   text-decoration: none;
+  border-bottom: medium none;
 }
 
 #grid_archives ul.ga_month_list li a:hover {
@@ -88,8 +90,10 @@
 }
 
 #grid_archives ul.ga_year_list li a, #grid_archives ul.ga_year_list li a:link, #grid_archives ul.ga_year_list li a:visited, #grid_archives ul li.ga_year_month a, #grid_archives ul li.ga_year_month a:link, #grid_archives ul li.ga_year_month a:visited {
-  color: #ABD1EA;
+  /* color: #ABD1EA; */
+  color: #7493BF;
   text-decoration: none;
+  border-bottom: medium none;
 }
 
 #grid_archives ul.ga_year_list li a:hover, #grid_archives ul li.ga_year_month a:hover {
@@ -98,7 +102,8 @@
 
 #grid_archives ul li.ga_year_month .ga_monthly_summary {
   display: inline-block;
-  color: #555;
+  /* color: #555; */
+  color: #BBB;
   font-family: georgia,verdana;
   font-size: 22px;
   font-style: italic;
@@ -114,7 +119,8 @@
 }
 
 #grid_archives ul li div.ga_post_main {
-  background-color: #0D0D0D;
+  /* background-color: #0D0D0D; */
+  background-color: #F6F6F6;
 /*  background-image: -moz-radial-gradient(0px 0px 0deg, circle farthest-corner, #3D3D3D 0%, #0D0D0D 60%);*/
 /*  background-image: -moz-radial-gradient(0px 0px 0deg, circle farthest-corner, #2B2B2B 0%, #0D0D0D 60%);*/
   /* background: -moz-linear-gradient(center top, #3D3D3D, #0D0D0D); */
@@ -136,8 +142,8 @@
 
 #grid_archives ul li.ga_post a, #grid_archives ul li.ga_post a:link, #grid_archives ul li.ga_post a:visited {
   line-height: 125%;
-  /* color: #A8EF9D; */
-  color: #ABD1EA;
+  /* color: #ABD1EA; */
+  color: #7493BF;
 }
 
 #grid_archives ul li.ga_post a:hover {
@@ -146,7 +152,8 @@
 }
 
 #grid_archives ul li.ga_post p {
-  color: #666;
+  /* color: #666; */
+  color: #333;
   /* font-size: 8pt; */
   font-size: 10.5px;
   font-style: italic;
@@ -158,4 +165,5 @@
   font-family: 'Myriad Pro',Corbel,'Helvetica Neue',Helvetica,'Lucida Grande',Verdana,sans-serif;
   font-style: normal;
   text-align: right;
+  color: #666;
 }

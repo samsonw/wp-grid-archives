@@ -1,8 +1,8 @@
 <?php
-/* 
+/*
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 1.5.0
+Version: 1.5.1
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '1.5.0');
+define('GRID_ARCHIVES_VERSION', '1.5.1');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -296,18 +296,18 @@ if (!class_exists("GridArchives")) {
                 $options['post_date_not_display'] = isset($_POST['post_date_not_display']) ? (boolean)$_POST['post_date_not_display'] : false;
                 $options['post_date_format'] = $_POST['post_date_format'];
                 $options['post_date_format_custom'] = stripslashes($_POST['post_date_format_custom']);
-                
+
                 $options['month_date_format'] = $_POST['month_date_format'];
                 $options['month_date_format_custom'] = stripslashes($_POST['month_date_format_custom']);
 
                 $options['post_hovered_highlight'] = isset($_POST['post_hovered_highlight']) ? (boolean)$_POST['post_hovered_highlight'] : false;
                 $options['monthly_summary_hovered_rotate'] = isset($_POST['monthly_summary_hovered_rotate']) ? (boolean)$_POST['monthly_summary_hovered_rotate'] : false;
-                
+
                 $options['load_resources_only_in_grid_archives_page'] = isset($_POST['load_resources_only_in_grid_archives_page']) ? (boolean)$_POST['load_resources_only_in_grid_archives_page'] : false;
                 $options['grid_archives_page_names'] = $options['load_resources_only_in_grid_archives_page'] ? stripslashes($_POST['grid_archives_page_names']) : $orig_options['grid_archives_page_names'];
 
                 $options['custom_css_styles'] = stripslashes($_POST['custom_css_styles']);
-                
+
                 $options['default_monthly_summary'] = htmlspecialchars(stripslashes($_POST['default_monthly_summary']));
                 $options['monthly_summaries'] = htmlspecialchars(stripslashes($_POST['monthly_summaries']));
 

@@ -25,7 +25,7 @@ jQuery(document).ready(function($) {
 
     $(scrollElement).stop().animate({
       'scrollTop': $target.offset().top
-    }, 2000, 'swing', function() {
+    }, 3000, 'swing', function() {
       // window.location.hash = target;
     });
   });

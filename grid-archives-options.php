@@ -42,6 +42,13 @@
           </td>
         </tr>
         <tr>
+          <th><label for="sort_direction">Sort Direction</label></th>
+          <td>
+            <label title="Desc"><input type="radio" value="desc" name="sort_direction" <?php if($options['sort_direction'] === 'desc') echo 'checked="checked"';?> > Desc</label>
+            <label title="Asc"><input type="radio" value="asc" name="sort_direction" <?php if($options['sort_direction'] === 'asc') echo 'checked="checked"';?> > Asc</label>
+          </td>
+        </tr>
+        <tr>
           <th><label for="post_title_max_len">Post Title Maximum Length</label></th>
           <td><input type="text" class="small-text" value="<?php echo $options['post_title_max_len']; ?>" id="post_title_max_len" name="post_title_max_len"> characters</td>
         </tr>
@@ -111,7 +118,7 @@
     <br/>
     <h3>Summarize Your Month</h3>
     <p>It's useful to share your thoughts and comments about one typical month.</p>
-    
+
     <p>Default monthly summary if not explicitly specified:</p>
     <table class="form-table">
       <tbody><tr>
@@ -119,12 +126,12 @@
         <td><input type="text" class="regular-text" value="<?php echo $options['default_monthly_summary']; ?>" id="default_monthly_summary" name="default_monthly_summary"> <span class="description">(leave it blank to show nothing)</span></td>
       </tr>
     </tbody></table>
-    
+
     <br/>
     <p>Input the month summary in the form "year.month##description", one month per line, the description will be displayed beside the month in the archives page:</p>
 
     <textarea name="monthly_summaries" cols="80" rows="20" style="min-width:58em;"><?php echo $options["monthly_summaries"]; ?></textarea>
-    
+
     <p class="submit"><input type="submit" value="Save Changes" class="button-primary" name="submit"></p>
   </form>
 </div>

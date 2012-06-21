@@ -2,8 +2,8 @@
 Contributors: samsonw
 Tags: archive, archives, grid
 Requires at least: 2.5
-Tested up to: 3.3
-Stable tag: 1.5.1
+Tested up to: 3.4
+Stable tag: 1.6.0
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -40,6 +40,10 @@ http://blog.samsonis.me/archives-of-the-year/
 
 
 == Changelog ==
+
+= 1.6.0 =
+* added an option to change the post sort direction (asec or desc)
+* make the plugin compatible with wordpress 3.4
 
 = 1.5.1 =
 * minor css style changes

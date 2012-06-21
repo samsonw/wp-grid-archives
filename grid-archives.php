@@ -2,7 +2,7 @@
 /*
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 1.5.1
+Version: 1.6.0
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '1.5.1');
+define('GRID_ARCHIVES_VERSION', '1.6.0');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -80,7 +80,7 @@ if (!class_exists("GridArchives")) {
             $category_id = get_cat_ID($category);
 
             // Get a simple array of all posts under category $category_id
-            $rawposts = get_posts(array('numberposts' => -1, 'category' => $category_id));
+            $rawposts = get_posts(array('numberposts' => -1, 'category' => $category_id, 'order' => $this->options['sort_direction']));
 
             // Trim some memory
             foreach ( $rawposts as $key => $rawpost )
@@ -174,7 +174,8 @@ if (!class_exists("GridArchives")) {
                 if(!$this->options['compact_hide_month_list']){
                     $html .= '<ul class="ga_month_list">';
                     $month_numbers = $this->get_months('numeric');
-                    foreach ( range( 12, 1 ) as $i ) {
+                    $month_range = $this->options['sort_direction'] === 'desc' ? range( 12, 1 ) : range( 1, 12 );
+                    foreach ( $month_range as $i ) {
                         $month_name = mysql2date($compact_month_list_date_format, date('Y-m-d H:i:s', strtotime($post_year . '-' . $month_numbers[$i])));
                         $month_post_count = count($yearly_posts[$post_year . '.' . $month_numbers[$i]]);
                         if ($month_post_count > 0) {
@@ -257,7 +258,7 @@ if (!class_exists("GridArchives")) {
         }
 
         private function get_options() {
-            $options = array('style_format' => 'classic', 'compact_hide_month_list' => false, 'compact_month_list_date_format' => 'F', 'compact_month_list_date_format_custom' => 'F', 'post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'load_resources_only_in_grid_archives_page' => false, 'grid_archives_page_names' => 'archives, grid-archives', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
+            $options = array('style_format' => 'classic', 'compact_hide_month_list' => false, 'compact_month_list_date_format' => 'F', 'compact_month_list_date_format_custom' => 'F', 'sort_direction' => 'desc', 'post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'load_resources_only_in_grid_archives_page' => false, 'grid_archives_page_names' => 'archives, grid-archives', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
             $saved_options = get_option(GRID_ARCHIVES_OPTION_NAME);
 
             if (!empty($saved_options)) {
@@ -290,6 +291,8 @@ if (!class_exists("GridArchives")) {
 
                 $options['compact_month_list_date_format'] = $_POST['compact_month_list_date_format'];
                 $options['compact_month_list_date_format_custom'] = stripslashes($_POST['compact_month_list_date_format_custom']);
+
+                $options['sort_direction'] = $_POST['sort_direction'];
 
                 $options['post_title_max_len'] = (int)$_POST['post_title_max_len'];
                 $options['post_content_max_len'] = (int)$_POST['post_content_max_len'];

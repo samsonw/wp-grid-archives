@@ -2,7 +2,7 @@
 /*
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 1.6.0
+Version: 1.7.0
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '1.6.0');
+define('GRID_ARCHIVES_VERSION', '1.7.0');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -70,14 +70,33 @@ if (!class_exists("GridArchives")) {
             register_activation_hook(__FILE__, array(&$this, 'install'));
         }
 
-        // Grab all posts and filter them into an array
-        private function get_posts($category) {
-            // If we have a non-expire cached copy of the filtered posts array, use that instead
-            if($posts = get_transient(GRID_ARCHIVES_POSTS_TRANSIENT_KEY)) {
-                return $posts;
+        private function retrieve_cache($key) {
+            if($caches = get_transient(GRID_ARCHIVES_POSTS_TRANSIENT_KEY)) {
+                return $caches[$key];
+            }
+            return NULL;
+        }
+
+        private function store_cache($key, $value) {
+            $caches = array();
+            if($stored_caches = get_transient(GRID_ARCHIVES_POSTS_TRANSIENT_KEY)) {
+                $caches = $stored_caches;
             }
 
+            $caches[$key] = $value;
+
+            // Store the results into the WordPress transient, expires in 1 day (24 hours)
+            set_transient(GRID_ARCHIVES_POSTS_TRANSIENT_KEY, $caches, 60*60*24);
+        }
+
+        // Grab all posts and filter them into an array
+        private function get_posts($category) {
             $category_id = get_cat_ID($category);
+
+            // If we have a non-expire cached copy of the filtered posts array, use that instead
+            if($posts = $this->retrieve_cache($category_id)) {
+                return $posts;
+            }
 
             // Get a simple array of all posts under category $category_id
             $rawposts = get_posts(array('numberposts' => -1, 'category' => $category_id, 'order' => $this->options['sort_direction']));
@@ -99,7 +118,7 @@ if (!class_exists("GridArchives")) {
             }
 
             // Store the results into the WordPress transient, expires in 1 day (24 hours)
-            set_transient(GRID_ARCHIVES_POSTS_TRANSIENT_KEY, $posts, 60*60*24);
+            $this->store_cache($category_id, $posts);
             return $posts;
         }
 

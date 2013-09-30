@@ -176,7 +176,9 @@
 
 #grid_archives ul li div.ga_post_main img{
   display: block;
-  margin: 0 auto;  
+  margin: 0 auto;
+  width: 130px;
+  max-height: 130px; 
 }
 
 #grid_archives ul li.ga_post a, #grid_archives ul li.ga_post a:link, #grid_archives ul li.ga_post a:visited {

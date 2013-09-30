@@ -105,7 +105,7 @@ if (!class_exists("GridArchives")) {
             foreach ( $rawposts as $key => $rawpost ){
                 if($this->options['featured_image']){
                     if(has_post_thumbnail($rawposts[$key]->ID)){
-                        $rawposts[$key]->post_content = get_the_post_thumbnail($rawposts[$key]->ID, array(130, 130));
+                        $rawposts[$key]->post_content = get_the_post_thumbnail($rawposts[$key]->ID);
                     }else{
                         $rawposts[$key]->post_content = '<div class="grid_archives_default_image"><span aria-hidden="true" class="grid_archives_icon_pencil"></span><div>No image</div></div>';
                     }
@@ -221,7 +221,7 @@ if (!class_exists("GridArchives")) {
                 }
                 $html .= '<ul>';
                 foreach ($yearly_posts as $yearmonth => $monthly_posts) {
-                    if($this->options['group_by'] === 'ym'){ƒ
+                    if($this->options['group_by'] === 'ym'){
                         list($year, $month) = explode('.', $yearmonth);
                         $html .= '<li id="' . $year . '_' . $month . '" class="ga_year_month">'
                         . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, date('Y-m-d H:i:s', strtotime($year . '-' . $month))) . '</a>';

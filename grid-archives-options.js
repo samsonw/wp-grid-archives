@@ -13,4 +13,18 @@ jQuery(document).ready(function($) {
       $('#grid_archives_page_names').attr('disabled', 'disabled');
     }
   });
+  $('#featured_image').click(function(){
+    if(!$(this).is(':checked')){
+      $('#post_content_max_len').removeAttr('disabled');
+    }else{
+      $('#post_content_max_len').attr('disabled', 'disabled');
+    } 
+  });
+  $('input[name=group_by]:radio').click(function(){
+    if($(this).val() === 'y'){
+      $('.compact_settings').fadeOut('slow');
+    }else{
+      $('.compact_settings').fadeIn('slow');
+    } 
+  });
 });

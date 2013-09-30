@@ -2,8 +2,9 @@
 /*
 Plugin Name: Grid Archives
 Plugin URI: http://blog.samsonis.me/tag/grid-archives/
-Version: 1.7.0
+Version: 1.8.0
 Author: <a href="http://blog.samsonis.me/">Samson Wu</a>
+Modified by: <a href"https://github.com/Globegitter/">Markus Padourek</a>
 Description: Grid Archives offers a grid style archives page for WordPress.
 
 **************************************************************************
@@ -26,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************
  */
 
-define('GRID_ARCHIVES_VERSION', '1.7.0');
+define('GRID_ARCHIVES_VERSION', '1.8.0');
 
 /**
  * Guess the wp-content and plugin urls/paths
@@ -97,13 +98,21 @@ if (!class_exists("GridArchives")) {
             if($posts = $this->retrieve_cache($category_id)) {
                 return $posts;
             }
-
             // Get a simple array of all posts under category $category_id
             $rawposts = get_posts(array('numberposts' => -1, 'category' => $category_id, 'order' => $this->options['sort_direction']));
 
             // Trim some memory
-            foreach ( $rawposts as $key => $rawpost )
-                $rawposts[$key]->post_content = $this->get_excerpt($rawposts[$key]->post_content, $this->options['post_content_max_len']);
+            foreach ( $rawposts as $key => $rawpost ){
+                if($this->options['featured_image']){
+                    if(has_post_thumbnail($rawposts[$key]->ID)){
+                        $rawposts[$key]->post_content = get_the_post_thumbnail($rawposts[$key]->ID, array(130, 130));
+                    }else{
+                        $rawposts[$key]->post_content = '<div class="grid_archives_default_image"><span aria-hidden="true" class="grid_archives_icon_pencil"></span><div>No image</div></div>';
+                    }
+                }else{
+                    $rawposts[$key]->post_content = '<p>' . $this->get_excerpt($rawposts[$key]->post_content, $this->options['post_content_max_len']) . '</p>'; 
+                }
+            }
 
             // Loop through each post and sort it into a structured array
             foreach( $rawposts as $key => $post ) {
@@ -149,21 +158,26 @@ if (!class_exists("GridArchives")) {
             $html = '<div id="grid_archives" class="grid_archives_column">'
                 . '<ul>';
             foreach ($posts as $post_year => $yearly_posts) {
+                if($this->options['group_by'] === 'y'){
+                    $html .= '<li class="ga_year_month">' . $post_year . '</li>';
+                }
                 foreach ($yearly_posts as $yearmonth => $monthly_posts) {
-                    list($year, $month) = explode('.', $yearmonth);
-                    $html .= '<li class="ga_year_month">'
-                            . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, date('Y-m-d H:i:s', strtotime($year . '-' . $month))) . '</a>';
-                    if(!empty($monthly_summaries[$yearmonth])){
-                        $html .= '<span class="ga_monthly_summary">“' . $monthly_summaries[$yearmonth] . '”';
-                    }else {
-                        $html .= '<span class="ga_monthly_summary">' . $this->options['default_monthly_summary'];
+                    if($this->options['group_by'] === 'ym'){
+                        list($year, $month) = explode('.', $yearmonth);
+                        $html .= '<li class="ga_year_month">'
+                                . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, date('Y-m-d H:i:s', strtotime($year . '-' . $month))) . '</a>';
+                        if(!empty($monthly_summaries[$yearmonth])){
+                            $html .= '<span class="ga_monthly_summary">“' . $monthly_summaries[$yearmonth] . '”';
+                        }else {
+                            $html .= '<span class="ga_monthly_summary">' . $this->options['default_monthly_summary'];
+                        }
                     }
                     $html .= '</span></li>';
                     foreach ($monthly_posts as $post) {
                         $html .= '<li class="ga_post">'
                             . '<div class="ga_post_main">'
                             . '<a href="' . get_permalink( $post->ID ) . '" title="' . $post->post_title . '">' . $this->get_excerpt($post->post_title, $this->options['post_title_max_len']) . '</a>'
-                            . '<p>' . $post->post_content . '</p>'
+                            . $post->post_content
                             . '</div>';
                         if(!$this->options['post_date_not_display']){
                             $html .= '<p class="ga_post_date">' . mysql2date($post_date_format, $post->post_date) . '</p>';
@@ -190,7 +204,7 @@ if (!class_exists("GridArchives")) {
             $html .= '</ul>';
             foreach ($posts as $post_year => $yearly_posts) {
                 $html .= '<div class="ga_pane">';
-                if(!$this->options['compact_hide_month_list']){
+                if(!$this->options['compact_hide_month_list'] && $this->options['group_by'] === 'ym'){
                     $html .= '<ul class="ga_month_list">';
                     $month_numbers = $this->get_months('numeric');
                     $month_range = $this->options['sort_direction'] === 'desc' ? range( 12, 1 ) : range( 1, 12 );
@@ -207,20 +221,22 @@ if (!class_exists("GridArchives")) {
                 }
                 $html .= '<ul>';
                 foreach ($yearly_posts as $yearmonth => $monthly_posts) {
-                    list($year, $month) = explode('.', $yearmonth);
-                    $html .= '<li id="' . $year . '_' . $month . '" class="ga_year_month">'
-                    . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, date('Y-m-d H:i:s', strtotime($year . '-' . $month))) . '</a>';
-                    if(!empty($monthly_summaries[$yearmonth])){
-                        $html .= '<span class="ga_monthly_summary">“' . $monthly_summaries[$yearmonth] . '”';
-                    }else {
-                        $html .= '<span class="ga_monthly_summary">' . $this->options['default_monthly_summary'];
+                    if($this->options['group_by'] === 'ym'){ƒ
+                        list($year, $month) = explode('.', $yearmonth);
+                        $html .= '<li id="' . $year . '_' . $month . '" class="ga_year_month">'
+                        . '<a href="' . get_month_link( $year, $month ) . '" title="Monthly Archives: ' . $yearmonth . '">'. mysql2date($month_date_format, date('Y-m-d H:i:s', strtotime($year . '-' . $month))) . '</a>';
+                        if(!empty($monthly_summaries[$yearmonth])){
+                            $html .= '<span class="ga_monthly_summary">“' . $monthly_summaries[$yearmonth] . '”';
+                        }else {
+                            $html .= '<span class="ga_monthly_summary">' . $this->options['default_monthly_summary'];
+                        }
                     }
                     $html .= '</span></li>';
                     foreach ($monthly_posts as $post) {
                         $html .= '<li class="ga_post">'
                         . '<div class="ga_post_main">'
                         . '<a href="' . get_permalink( $post->ID ) . '" title="' . $post->post_title . '">' . $this->get_excerpt($post->post_title, $this->options['post_title_max_len']) . '</a>'
-                        . '<p>' . $post->post_content . '</p>'
+                        . $post->post_content
                         . '</div>';
                         if(!$this->options['post_date_not_display']){
                             $html .= '<p class="ga_post_date">' . mysql2date($post_date_format, $post->post_date) . '</p>';
@@ -277,7 +293,7 @@ if (!class_exists("GridArchives")) {
         }
 
         private function get_options() {
-            $options = array('style_format' => 'classic', 'compact_hide_month_list' => false, 'compact_month_list_date_format' => 'F', 'compact_month_list_date_format_custom' => 'F', 'sort_direction' => 'desc', 'post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'load_resources_only_in_grid_archives_page' => false, 'grid_archives_page_names' => 'archives, grid-archives', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
+            $options = array('style_format' => 'classic', 'featured_image' => false, 'group_by' => 'ym', 'compact_hide_month_list' => false, 'compact_month_list_date_format' => 'F', 'compact_month_list_date_format_custom' => 'F', 'sort_direction' => 'desc', 'post_title_max_len' => 60, 'post_content_max_len' => 90, 'post_date_not_display' => false, 'post_date_format' => 'j M Y', 'post_date_format_custom' => 'j M Y', 'month_date_format' => 'Y.m', 'month_date_format_custom' => 'Y.m', 'post_hovered_highlight' => true, 'monthly_summary_hovered_rotate' => true, 'custom_css_styles' => '', 'load_resources_only_in_grid_archives_page' => false, 'grid_archives_page_names' => 'archives, grid-archives', 'default_monthly_summary' => '“... ...”', 'monthly_summaries' => "2010.09##It was AWESOME!\n2010.08##Anyone who has never made a mistake has never tried anything new.");
             $saved_options = get_option(GRID_ARCHIVES_OPTION_NAME);
 
             if (!empty($saved_options)) {
@@ -305,6 +321,8 @@ if (!class_exists("GridArchives")) {
                 $options = array();
 
                 $options['style_format'] = $_POST['style_format'];
+                $options['featured_image'] = isset($_POST['featured_image']) ? (boolean)$_POST['featured_image'] : false;;
+                $options['group_by'] = $_POST['group_by'];
 
                 $options['compact_hide_month_list'] = isset($_POST['compact_hide_month_list']) ? (boolean)$_POST['compact_hide_month_list'] : false;
 

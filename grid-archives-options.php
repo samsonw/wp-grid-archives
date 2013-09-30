@@ -4,6 +4,8 @@
   <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>" name="grid_archives">
     <?php wp_nonce_field('grid-archives-nonce'); ?>
 
+    <p class="submit"><input type="submit" value="Save Changes" class="button-primary" name="submit"></p>
+
     <h3>Usage</h3>
     <p>Create an archive page for Grid Archives, then insert the code "[grid_archives]" in the content.</p>
 
@@ -19,11 +21,21 @@
             <label title="Compact Style"><input type="radio" value="compact" name="style_format" <?php if($options['style_format'] === 'compact') echo 'checked="checked"';?> > Compact</label> (<a target="_blank" href="http://blog.samsonis.me/archives-of-the-year/">Example</a>)
           </td>
         </tr>
-        <tr class="compact_settings" <?php if($options['style_format'] === 'classic') echo 'style="display:none;"';?> >
+        <tr>
+          <th><label for="featured_image">Featured Image</label></th>
+          <td><input type="checkbox" value="1" id="featured_image" name="featured_image" <?php if($options['featured_image']) echo 'checked="checked"';?> > Display featured image instead of post content</td>        </tr>
+        <tr>
+          <th><label for="group_by">Group By</label></th>
+          <td>
+            <label title="Year and month"><input type="radio" value="ym" name="group_by" <?php if($options['group_by'] === 'ym') echo 'checked="checked"';?> > Year and month (default)</label>
+            <label title="Year"><input type="radio" value="y" name="group_by" <?php if($options['group_by'] === 'y') echo 'checked="checked"';?> > Year</label>
+          </td>
+        </tr>
+        <tr class="compact_settings" <?php if($options['style_format'] === 'classic' || $options['group_by'] === 'y') echo 'style="display:none;"';?> >
           <th><label for="compact_hide_month_list">"Compact" Mode Month List</label></th>
           <td><input type="checkbox" value="1" id="compact_hide_month_list" name="compact_hide_month_list" <?php if($options['compact_hide_month_list']) echo 'checked="checked"';?> > Do not display month list in "Compact" mode</td>
         </tr>
-        <tr class="compact_settings" <?php if($options['style_format'] === 'classic') echo 'style="display:none;"';?> >
+        <tr class="compact_settings" <?php if($options['style_format'] === 'classic' || $options['group_by'] === 'y') echo 'style="display:none;"';?> >
           <th scope="row">"Compact" Mode Month List Date Format</th>
           <td>
             <fieldset><legend class="screen-reader-text"><span>Month List Date Format</span></legend>
@@ -54,7 +66,7 @@
         </tr>
         <tr>
           <th><label for="post_content_max_len">Post Content Maximum Length</label></th>
-          <td><input type="text" class="small-text" value="<?php echo $options['post_content_max_len']; ?>" id="post_content_max_len" name="post_content_max_len"> characters</td>
+          <td><input type="text" class="small-text" value="<?php echo $options['post_content_max_len']; ?>" id="post_content_max_len" name="post_content_max_len" <?php if($options['featured_image']) echo 'disabled="disabled"';?>> characters</td>
         </tr>
         <tr valign="top">
           <th scope="row"><label for="post_date_not_display">Post Date</label></th>
@@ -103,6 +115,8 @@
             <span class="description">These custom CSS styles will overwrite the Grid Archives default CSS styles.</span><br/>
             <span class="description">For example, to custom the box size and its background color, you can use custom css like:</span><br/>
             <span class="description">#grid_archives ul li div.ga_post_main {background-color: #0D0D0D; width: 150px; height: 150px;}</span><br/>
+            <span class="description">To remove the default shadow and rounded you can use the following code (Note: just add :hover to change the hover style):</span><br/>
+            <span class="description">#grid_archives ul li div.ga_post_main {border-radius: 0; box-shadow: none;}</span><br />
             <span class="description">[You can also copy all the Grid Archives default css from "Plugin Editor" here and make any modifications you like, these modifications won't be lost when you update the plugin.]</span>
           </td>
         </tr>

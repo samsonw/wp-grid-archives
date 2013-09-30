@@ -1,9 +1,9 @@
 === Grid Archives ===
-Contributors: samsonw
+Contributors: samsonw, globegitter
 Tags: archive, archives, grid
 Requires at least: 2.5
-Tested up to: 3.4
-Stable tag: 1.7.0
+Tested up to: 3.5.1
+Stable tag: 1.8.0
 License: GPLv3
 
 Grid Archives offers a grid style archives page for WordPress.
@@ -40,6 +40,12 @@ http://blog.samsonis.me/archives-of-the-year/
 
 
 == Changelog ==
+
+= 1.8.0 =
+* Added the option to display featured image instead of post content
+* Added the option to group the posts either bey year (new) or year and month (old/default)
+* Other minor changes on the settings page
+* Tested with wordpress 3.5.1
 
 = 1.7.0 =
 * fixed the cache issue
